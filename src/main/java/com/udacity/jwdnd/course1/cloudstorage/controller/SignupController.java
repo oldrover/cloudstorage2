@@ -19,12 +19,12 @@ public class SignupController {
         this.userService = userService;
     }
 
-    @GetMapping()
+    @GetMapping
     public String signupView() {
         return "/signup";
     }
 
-    @PostMapping()
+    @PostMapping
     public String signupUser(@ModelAttribute User user, Model model) {
         String signupError = null;
 
