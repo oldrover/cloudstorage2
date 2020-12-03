@@ -18,12 +18,7 @@ public class NoteService {
     }
 
     public int addNote(User user, NoteForm noteForm) {
-        Note newNote = new Note();
-        newNote.setNoteTitle(noteForm.getNoteTitle());
-        newNote.setNoteDescription(noteForm.getNoteDescription());
-        newNote.setUserId(user.getUserId());
-
-        return noteMapper.insertNote(newNote);
+        return noteMapper.insertNote(new Note(null, noteForm.getNoteTitle(), noteForm.getNoteDescription(), user.getUserId()));
     }
 
     public List<Note> getNotes(Integer userId) {
