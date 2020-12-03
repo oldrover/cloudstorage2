@@ -17,14 +17,10 @@ public class CredentialService {
     }
 
     public int addCredential(User user, CredentialForm credentialForm) {
-        Credential credential = new Credential();
-        credential.setUrl(credentialForm.getUrl());
-        credential.setUsername(credentialForm.getUsername());
-        //credential key
-        //credential.setPassword(credentialForm.getPassword());
-        credential.setUserId(user.getUserId());
+        String key ="";
+        String password = credentialForm.getPassword();
 
-        return credentialMapper.insertCredential(credential);
+        return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), key,password, user.getUserId()));
 
 
     }
