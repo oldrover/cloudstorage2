@@ -15,13 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/home")
 public class HomeController {
 
+    private UserService userService;
     private NoteService noteService;
     //private FileService fileService;
     //private CredentialService credentialService;
-    private UserService userService;
 
-    public HomeController(UserService userService) {
+
+    public HomeController(UserService userService, NoteService noteService) {
         this.userService = userService;
+        this.noteService = noteService;
     }
 
     @GetMapping
