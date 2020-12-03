@@ -27,7 +27,7 @@ public class HomeController {
     }
 
     @GetMapping
-    public String getHomePage(Authentication auth, Model model) {
+    public String getHomePage(Authentication auth, NoteForm noteForm, Model model) {
         User user = userService.getUser(auth.getName());
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         return "home";
