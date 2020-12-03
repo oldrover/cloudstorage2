@@ -13,7 +13,8 @@ public class NoteService {
     private NoteMapper noteMapper;
 
 
-    public NoteService() {
+    public NoteService(NoteMapper noteMapper) {
+        this.noteMapper = noteMapper;
     }
 
     public int addNote(User user, NoteForm noteForm) {
