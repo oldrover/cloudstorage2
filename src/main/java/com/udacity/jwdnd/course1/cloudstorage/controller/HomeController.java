@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
@@ -31,9 +32,9 @@ public class HomeController {
     }
 
     @PostMapping
-    public String saveNote(Authentication auth, Model model) {
+    public String saveNote(Authentication auth, NoteForm noteForm, Model model) {
         User user = userService.getUser(auth.getName());
-        this.noteService.addNote(user);
+        this.noteService.addNote(user, noteForm);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         return "home";
     }
