@@ -35,7 +35,6 @@ public class HomeController {
         return "home";
     }
 
-
     @PostMapping
     public String homePageAction(@RequestParam String action, Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
         User user = userService.getUser(auth.getName());
@@ -46,6 +45,7 @@ public class HomeController {
                 break;
 
             case "deln":
+                this.noteService.deleteNote(noteForm.getNoteId());
                 break;
 
             case "addc":
@@ -53,6 +53,7 @@ public class HomeController {
                 break;
 
             case "delc":
+                this.credentialService.deleteCredential(credentialForm.getCredentialId());
                 break;
 
             default:
@@ -63,25 +64,4 @@ public class HomeController {
         return "home";
     }
 
-
-    /*
-    @RequestMapping(value="/note", method = RequestMethod.POST)
-    public String saveNote(Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
-        User user = userService.getUser(auth.getName());
-
-        this.noteService.addNote(user, noteForm);
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-
-        return "home";
-    }
-
-    @RequestMapping(value="/credential", method = RequestMethod.POST)
-    public String saveCredential(Authentication auth,NoteForm noteForm, CredentialForm credentialForm, Model model) {
-        User user = userService.getUser(auth.getName());
-
-
-
-        return "home";
-    }
-    */
 }
