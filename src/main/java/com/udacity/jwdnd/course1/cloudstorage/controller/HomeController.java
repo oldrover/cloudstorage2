@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/home")
@@ -37,13 +38,27 @@ public class HomeController {
         return "home";
     }
 
-    @PostMapping
+
+    //Postmapping with Params????
+
+    @RequestMapping(value="/note", method = RequestMethod.POST)
     public String saveNote(Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
+        //simplify??
         User user = userService.getUser(auth.getName());
+
         this.noteService.addNote(user, noteForm);
-        this.credentialService.addCredential(user, credentialForm);
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
+
+        return "home";
+    }
+
+    @RequestMapping(value="/credential", method = RequestMethod.POST)
+    public String saveCredential(Authentication auth,NoteForm noteForm, CredentialForm credentialForm, Model model) {
+        User user = userService.getUser(auth.getName());
+
+        this.credentialService.addCredential(user, credentialForm);
         model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
+
         return "home";
     }
 }
