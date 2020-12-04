@@ -40,8 +40,13 @@ public class HomeController {
         User user = userService.getUser(auth.getName());
 
         switch (action) {
-            case "addn":
-                this.noteService.addNote(user, noteForm);
+            case "addorupn":
+                if(noteForm.getNoteId()== null){
+                    this.noteService.addNote(user, noteForm);
+                }
+                else {
+                    this.noteService.updateNote(noteForm);
+                }
                 break;
 
             case "deln":
