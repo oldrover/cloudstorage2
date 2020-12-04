@@ -28,7 +28,10 @@ public class CredentialService {
         String hashedPassword = hashService.getHashedValue(credentialForm.getPassword(), encodedkey);
         return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), encodedkey,hashedPassword, user.getUserId()));
 
+    }
 
+    public int deleteCredential(Integer credentialId) {
+        return credentialMapper.deleteCredential(credentialId);
     }
 
     public List<Credential> getCredentials(Integer userId) {
