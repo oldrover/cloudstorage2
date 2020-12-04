@@ -36,7 +36,7 @@ public class HomeController {
     }
 
     @PostMapping
-    public String homePageAction(@RequestParam String action, Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
+    public String homePageAction(@RequestParam String action, @RequestParam(required = false) Integer id, Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
         User user = userService.getUser(auth.getName());
 
         switch (action) {
@@ -45,7 +45,7 @@ public class HomeController {
                 break;
 
             case "deln":
-                this.noteService.deleteNote(noteForm.getNoteId());
+                this.noteService.deleteNote(id);
                 break;
 
             case "addc":
@@ -53,7 +53,7 @@ public class HomeController {
                 break;
 
             case "delc":
-                this.credentialService.deleteCredential(credentialForm.getCredentialId());
+                this.credentialService.deleteCredential(id);
                 break;
 
             default:
