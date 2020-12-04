@@ -41,7 +41,7 @@ public class HomeController {
 
         switch (action) {
             case "addorupn":
-                if(noteForm.getNoteId()== null){
+                if(noteForm.getNoteId() == null) {
                     this.noteService.addNote(user, noteForm);
                 }
                 else {
@@ -53,8 +53,13 @@ public class HomeController {
                 this.noteService.deleteNote(id);
                 break;
 
-            case "addc":
-                this.credentialService.addCredential(user, credentialForm);
+            case "addorupc":
+                if(credentialForm.getCredentialId() == null) {
+                    this.credentialService.addCredential(user, credentialForm);
+                }
+                else {
+                    this.credentialService.updateCredential(credentialForm);
+                }
                 break;
 
             case "delc":
