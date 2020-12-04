@@ -6,21 +6,27 @@ import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 
 @Service
 public class CredentialService {
     private CredentialMapper credentialMapper;
+    private HashService hashService;
 
-    public CredentialService(CredentialMapper credentialMapper) {
+    public CredentialService(CredentialMapper credentialMapper, HashService hashService) {
         this.credentialMapper = credentialMapper;
+        this.hashService = hashService;
     }
 
     public int addCredential(User user, CredentialForm credentialForm) {
-        String key ="";
-        String password = credentialForm.getPassword();
-
-        return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), key,password, user.getUserId()));
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[16];
+        random.nextBytes(key);
+        String encodedkey = Base64.getEncoder().encodeToString(key);
+        String hashedPassword = hashService.getHashedValue(credentialForm.getPassword(), encodedkey);
+        return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), encodedkey,hashedPassword, user.getUserId()));
 
 
     }
