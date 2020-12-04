@@ -83,7 +83,7 @@
                                         <td>
 
                                             <form action="#" th:action="@{/home(action=deln,id=${note.noteId})}" method="POST">
-                                                <button type="button" class="btn btn-success" onclick="showNoteModal()">Edit</button>
+                                                <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
                                                 <button type="submit" class="btn btn-danger">Delete</button>
                                             </form>
                                         </td>
@@ -146,7 +146,7 @@
                                 <tr th:each="credential : ${credentials}">
                                     <td>
                                         <form action="#" th:action="@{/home(action=delc,id=${credential.credentialId})}" method="POST">
-                                            <button type="button" class="btn btn-success" onclick="showCredentialModal()">Edit</button>
+                                            <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.password}')|">Edit</button>
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
