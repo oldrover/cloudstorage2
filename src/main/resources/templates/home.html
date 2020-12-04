@@ -81,8 +81,11 @@
                                 <tbody>
                                     <tr th:each="note : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+
+                                            <form action="#" th:action="@{/home(action=deln,id=${note.noteId})}" method="POST">
+                                                <button type="button" class="btn btn-success" onclick="showNoteModal()">Edit</button>
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
                                         </td>
                                         <th id="noteTitle" th:text="${note.noteTitle}" scope="row">Example Note Title</th>
                                         <td id="noteDescription" th:text="${note.noteDescription}">Example Note Description </td>
@@ -142,8 +145,10 @@
                                 <tbody>
                                 <tr th:each="credential : ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success">Edit</button>
-                                        <a class="btn btn-danger">Delete</a>
+                                        <form action="#" th:action="@{/home(action=delc,id=${credential.credentialId})}" method="POST">
+                                            <button type="button" class="btn btn-success" onclick="showCredentialModal()">Edit</button>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
                                     </td>
                                     <th id="credentialUrl" th:text="${credential.url}" scope="row">Example Credential URL</th>
                                     <td id="credentialUsername" th:text="${credential.username}">Example Credential Username</td>
