@@ -48,11 +48,9 @@ public class HomeController {
                     this.noteService.updateNote(noteForm);
                 }
                 break;
-
             case "deln":
                 this.noteService.deleteNote(id);
                 break;
-
             case "addorupc":
                 if(credentialForm.getCredentialId() == null) {
                     this.credentialService.addCredential(user, credentialForm);
@@ -61,7 +59,6 @@ public class HomeController {
                     this.credentialService.updateCredential(credentialForm);
                 }
                 break;
-
             case "delc":
                 this.credentialService.deleteCredential(id);
                 break;

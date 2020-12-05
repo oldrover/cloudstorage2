@@ -31,9 +31,12 @@ public class CredentialService {
     }
 
     public int updateCredential(CredentialForm credentialForm) {
-        // TO DO KEY CRYPT ETC
-        String key = "";
-        return credentialMapper.updateCredential(new Credential(credentialForm.getCredentialId(),credentialForm.getUrl(), credentialForm.getUsername(), key, credentialForm.getPassword(), null));
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[16];
+        random.nextBytes(key);
+        String encodedKey = Base64.getEncoder().encodeToString(key);
+        String encryptedPassword = encryptionService.encryptValue(credentialForm.getPassword(), encodedKey);
+        return credentialMapper.updateCredential(new Credential(credentialForm.getCredentialId(),credentialForm.getUrl(), credentialForm.getUsername(), encodedKey, encryptedPassword, null));
     }
 
     public int deleteCredential(Integer credentialId) {
