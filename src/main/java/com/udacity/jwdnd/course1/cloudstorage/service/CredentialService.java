@@ -13,21 +13,27 @@ import java.util.List;
 @Service
 public class CredentialService {
     private CredentialMapper credentialMapper;
-    private HashService hashService;
+    private EncryptionService encryptionService;
 
-    public CredentialService(CredentialMapper credentialMapper, HashService hashService) {
+    public CredentialService(CredentialMapper credentialMapper, EncryptionService encryptionService) {
         this.credentialMapper = credentialMapper;
-        this.hashService = hashService;
+        this.encryptionService = encryptionService;
     }
 
     public int addCredential(User user, CredentialForm credentialForm) {
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
         random.nextBytes(key);
-        String encodedkey = Base64.getEncoder().encodeToString(key);
-        String hashedPassword = hashService.getHashedValue(credentialForm.getPassword(), encodedkey);
-        return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), encodedkey,hashedPassword, user.getUserId()));
+        String encodedKey = Base64.getEncoder().encodeToString(key);
+        String encryptedPassword = encryptionService.encryptValue(credentialForm.getPassword(), encodedKey);
+        return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), encodedKey,encryptedPassword, user.getUserId()));
 
+    }
+
+    public int updateCredential(CredentialForm credentialForm) {
+        // TO DO KEY CRYPT ETC
+        String key = "";
+        return credentialMapper.updateCredential(new Credential(credentialForm.getCredentialId(),credentialForm.getUrl(), credentialForm.getUsername(), key, credentialForm.getPassword(), null));
     }
 
     public int deleteCredential(Integer credentialId) {
