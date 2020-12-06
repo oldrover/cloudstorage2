@@ -5,6 +5,7 @@ public class CredentialForm {
     private String url;
     private String username;
     private String password;
+    private String encryptedPassword;
 
     public Integer getCredentialId() {
         return credentialId;
@@ -36,5 +37,13 @@ public class CredentialForm {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEncryptedPassword() {
+        return encryptedPassword;
+    }
+
+    public void setEncryptedPassword(String cryptedPassword) {
+        this.encryptedPassword = cryptedPassword;
     }
 }
