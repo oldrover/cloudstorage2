@@ -47,28 +47,9 @@ public class HomeController {
     }
 
     @PostMapping
-    public String homePageAction(@RequestParam String action, @RequestParam(required = false) Integer id, Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
+    public String homePageAction(Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
         User user = userService.getUser(auth.getName());
 
-        switch (action) {
-            case "delf":
-                this.fileService.deleteFile(id);
-                break;
-
-            case "addorupc":
-                if(credentialForm.getCredentialId() == null) {
-                    this.credentialService.addCredential(user, credentialForm);
-                }
-                else {
-                    this.credentialService.updateCredential(credentialForm);
-                }
-                break;
-
-            case "delc":
-                this.credentialService.deleteCredential(id);
-                break;
-
-        }
         model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
@@ -97,6 +78,25 @@ public class HomeController {
         return "result";
     }
 
+    @PostMapping("/credential")
+    public String addCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
+        User user = userService.getUser(auth.getName());
+        if(credentialForm.getCredentialId() == null) {
+            this.credentialService.addCredential(user, credentialForm);
+        }
+        else {
+            this.credentialService.updateCredential(credentialForm);
+        }
+        return "result";
+    }
+
+    @PostMapping("/credential/delete/{credentialId}")
+    public String deleteCredential(@PathVariable Integer credentialId, Authentication auth){
+        User user = userService.getUser(auth.getName());
+        this.credentialService.deleteCredential(credentialId);
+        return "result";
+    }
+
 
     @PostMapping("/file")
     public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication auth,NoteForm noteForm, CredentialForm credentialForm, Model model) throws IOException {
@@ -120,5 +120,13 @@ public class HomeController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFileName() + "\"")
                 .body(new ByteArrayResource(file.getFile()));
     }
+
+    @PostMapping("/file/delete/{fileId}")
+    public String deleteFile(@PathVariable Integer fileId, Authentication auth) {
+        User user = userService.getUser(auth.getName());
+        this.fileService.deleteFile(fileId);
+        return "result";
+    }
+
 
 }
