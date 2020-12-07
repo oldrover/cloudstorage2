@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.google.common.net.HttpHeaders;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.FileData;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
@@ -8,13 +9,14 @@ import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 
@@ -106,6 +108,16 @@ public class HomeController {
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
         return "home";
+    }
+
+    @GetMapping("/file/view/{fileId}")
+    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable Integer fileId, Authentication auth) {
+        User user = userService.getUser(auth.getName());
+        FileData file = fileService.viewFile(fileId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(file.getContentType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFileName() + "\"")
+                .body(new ByteArrayResource(file.getFile()));
     }
 
 }
