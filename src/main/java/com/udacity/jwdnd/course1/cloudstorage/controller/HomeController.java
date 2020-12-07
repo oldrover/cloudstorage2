@@ -175,9 +175,18 @@ public class HomeController {
 
     //Mapping for deleting a file
     @PostMapping("/file/delete/{fileId}")
-    public String deleteFile(@PathVariable Integer fileId, Authentication auth) {
+    public String deleteFile(@PathVariable Integer fileId, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
-        this.fileService.deleteFile(fileId);
+        if(this.fileService.deleteFile(fileId) == 1) {
+            model.addAttribute("success",true);
+            model.addAttribute("successMessage","File successfully deleted!");
+
+        }else {
+            model.addAttribute("success",false);
+            model.addAttribute("successMessage","File not deleted!");
+        }
+
+
         return "result";
     }
 
