@@ -51,25 +51,8 @@ public class HomeController {
         User user = userService.getUser(auth.getName());
 
         switch (action) {
-            case "upfile":
-
-                break;
-
             case "delf":
                 this.fileService.deleteFile(id);
-                break;
-
-            case "addorupn":
-                if(noteForm.getNoteId() == null) {
-                    this.noteService.addNote(user, noteForm);
-                }
-                else {
-                    this.noteService.updateNote(noteForm);
-                }
-                break;
-
-            case "deln":
-                this.noteService.deleteNote(id);
                 break;
 
             case "addorupc":
@@ -94,6 +77,27 @@ public class HomeController {
 
     }
 
+    @PostMapping("/note")
+    public String addOrUpdateNote(@RequestParam(required = false) Integer id, NoteForm noteForm, Authentication auth) {
+        User user = userService.getUser(auth.getName());
+        if(noteForm.getNoteId() == null) {
+            this.noteService.addNote(user, noteForm);
+        }
+        else {
+            this.noteService.updateNote(noteForm);
+        }
+
+        return "result";
+    }
+
+    @PostMapping("/note/delete/{noteId}")
+    public String deleteNote(@PathVariable Integer noteId, Authentication auth){
+        User user = userService.getUser(auth.getName());
+        this.noteService.deleteNote(noteId);
+        return "result";
+    }
+
+
     @PostMapping("/file")
     public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication auth,NoteForm noteForm, CredentialForm credentialForm, Model model) throws IOException {
         User user = userService.getUser(auth.getName());
@@ -104,10 +108,7 @@ public class HomeController {
 
         }
         fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes()));
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        return "home";
+        return "result";
     }
 
     @GetMapping("/file/view/{fileId}")

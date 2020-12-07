@@ -84,7 +84,7 @@
                                     <tr th:each="note : ${notes}">
                                         <td>
 
-                                            <form action="#" th:action="@{/home(action=deln,id=${note.noteId})}" method="POST">
+                                            <form action="#" th:action="@{'/home/note/delete/' + ${note.noteId}}" method="POST">
                                                 <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
                                                 <button type="submit" class="btn btn-danger">Delete</button>
                                             </form>
@@ -106,7 +106,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="#" th:action="@{/home(action=addorupn)}" th:object="${noteForm}" method="POST">
+                                        <form action="#" th:action="@{/home/note/}" th:object="${noteForm}" method="POST">
                                             <input type="hidden" name="noteId" id="note-id" th:field="*{noteId}">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
