@@ -51,12 +51,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr th:each="file : ${files}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-                                        <a  class="btn btn-danger">Delete</a>
+                                        <form action="#" th:action="@{/home(action=delf,id=${file.fileId})}" method="POST">
+                                            <button target="_blank" class="btn btn-success">View</button>
+                                            <button type="submit"  class="btn btn-danger">Delete</button>
+                                        </form>
                                     </td>
-                                    <th scope="row">ExampleFile.txt</th>
+                                    <th id="fileName" th:text="file.fileName" scope="row">ExampleFile.txt</th>
                                 </tr>
                                 </tbody>
                             </table>
