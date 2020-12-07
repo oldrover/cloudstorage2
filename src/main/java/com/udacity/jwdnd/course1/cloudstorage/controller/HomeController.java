@@ -105,22 +105,43 @@ public class HomeController {
 
     //Mapping for adding or updating a credential
     @PostMapping("/credential")
-    public String addOrUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
+    public String addOrUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         if(credentialForm.getCredentialId() == null) {
-            this.credentialService.addCredential(user, credentialForm);
+            if(this.credentialService.addCredential(user, credentialForm) == 1) {
+                model.addAttribute("success",true);
+                model.addAttribute("successMessage","Credential saved!");
+
+            }else {
+                model.addAttribute("success",false);
+                model.addAttribute("successMessage","Credential not saved!");
+
+            }
         }
         else {
-            this.credentialService.updateCredential(credentialForm);
+            if(this.credentialService.updateCredential(credentialForm) == 1) {
+                model.addAttribute("success",true);
+                model.addAttribute("successMessage","Your changes were successfully saved!");
+            }else {
+                model.addAttribute("success",false);
+                model.addAttribute("successMessage","Changes were not saved!");
+            }
         }
         return "result";
     }
 
     //Mapping for deleting a credential
     @PostMapping("/credential/delete/{credentialId}")
-    public String deleteCredential(@PathVariable Integer credentialId, Authentication auth){
+    public String deleteCredential(@PathVariable Integer credentialId, Authentication auth, Model model){
         User user = userService.getUser(auth.getName());
-        this.credentialService.deleteCredential(credentialId);
+        if(this.credentialService.deleteCredential(credentialId) == 1) {
+            model.addAttribute("success",true);
+            model.addAttribute("successMessage","Credential deleted!");
+
+        }else{
+            model.addAttribute("success",false);
+            model.addAttribute("errorMessage","Credential was not deleted!");
+        }
         return "result";
     }
 
