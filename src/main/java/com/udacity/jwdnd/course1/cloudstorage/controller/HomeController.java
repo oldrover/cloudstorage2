@@ -46,6 +46,7 @@ public class HomeController {
         return "home";
     }
 
+    /*
     @PostMapping
     public String homePageAction(Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
         User user = userService.getUser(auth.getName());
@@ -57,7 +58,9 @@ public class HomeController {
 
 
     }
+    */
 
+    //Mapping for adding or updating a Note
     @PostMapping("/note")
     public String addOrUpdateNote(@RequestParam(required = false) Integer id, NoteForm noteForm, Authentication auth) {
         User user = userService.getUser(auth.getName());
@@ -71,6 +74,7 @@ public class HomeController {
         return "result";
     }
 
+    //Mapping for deleting a Note
     @PostMapping("/note/delete/{noteId}")
     public String deleteNote(@PathVariable Integer noteId, Authentication auth){
         User user = userService.getUser(auth.getName());
@@ -78,8 +82,9 @@ public class HomeController {
         return "result";
     }
 
+    //Mapping for adding or updating a aredential
     @PostMapping("/credential")
-    public String addCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
+    public String addorUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
         User user = userService.getUser(auth.getName());
         if(credentialForm.getCredentialId() == null) {
             this.credentialService.addCredential(user, credentialForm);
@@ -90,6 +95,7 @@ public class HomeController {
         return "result";
     }
 
+    //Mapping for deleting a credential
     @PostMapping("/credential/delete/{credentialId}")
     public String deleteCredential(@PathVariable Integer credentialId, Authentication auth){
         User user = userService.getUser(auth.getName());
@@ -98,6 +104,7 @@ public class HomeController {
     }
 
 
+    //Mapping for uploading a file
     @PostMapping("/file")
     public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication auth,NoteForm noteForm, CredentialForm credentialForm, Model model) throws IOException {
         User user = userService.getUser(auth.getName());
@@ -111,6 +118,7 @@ public class HomeController {
         return "result";
     }
 
+    //Mapping for downloading a file
     @GetMapping("/file/view/{fileId}")
     public ResponseEntity<ByteArrayResource> viewFile(@PathVariable Integer fileId, Authentication auth) {
         User user = userService.getUser(auth.getName());
@@ -121,6 +129,7 @@ public class HomeController {
                 .body(new ByteArrayResource(file.getFile()));
     }
 
+    //Mapping for deleting a file
     @PostMapping("/file/delete/{fileId}")
     public String deleteFile(@PathVariable Integer fileId, Authentication auth) {
         User user = userService.getUser(auth.getName());
