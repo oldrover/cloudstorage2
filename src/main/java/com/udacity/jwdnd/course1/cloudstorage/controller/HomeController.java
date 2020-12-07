@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -20,13 +21,14 @@ public class HomeController {
     private UserService userService;
     private NoteService noteService;
     private CredentialService credentialService;
-    //private FileService fileService;
+    private FileService fileService;
 
 
-    public HomeController(UserService userService, NoteService noteService, CredentialService credentialService) {
+    public HomeController(UserService userService, NoteService noteService, CredentialService credentialService, FileService fileService) {
         this.userService = userService;
         this.noteService = noteService;
         this.credentialService = credentialService;
+        this.fileService = fileService;
     }
 
     @GetMapping
@@ -68,6 +70,7 @@ public class HomeController {
             default:
 
         }
+        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
         model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
         model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
         return "redirect:/home";
