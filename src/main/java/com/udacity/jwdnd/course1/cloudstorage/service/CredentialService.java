@@ -47,7 +47,7 @@ public class CredentialService {
 
         //decryption here and returning list
         List<Credential> credentialList = credentialMapper.getCredential(userId);
-        credentialList.stream().forEach(cr -> cr.setEncryptedPassword(encryptionService.decryptValue(cr.getPassword(), cr.getKey())));
+        credentialList.stream().forEach(cr -> cr.setDecryptedPassword(encryptionService.decryptValue(cr.getPassword(), cr.getKey())));
         return credentialList;
     }
 }
