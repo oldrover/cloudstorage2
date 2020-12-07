@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface FileDataMapper {
     @Select("SELECT * FROM FILES WHERE userid = #{userId}")
-    List<FileData> getFile(Integer userId);
+    List<FileData> getFiles(Integer userId);
 
     @Insert("INSERT INTO FILES(filename, contenttype, filesize, userid, filedata) VALUES(#{fileName}, #{contentType}, #{userId}, #{fileSize})")
     @Options(useGeneratedKeys = true, keyProperty = "fileId")
