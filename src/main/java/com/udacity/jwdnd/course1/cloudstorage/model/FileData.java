@@ -7,8 +7,8 @@ public class FileData {
     private String fileName;
     private String contentType;
     private String fileSize;
-    private File file;
     private Integer userId;
+    private File file;
 
 
     public FileData(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, File file) {
@@ -59,5 +59,13 @@ public class FileData {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }
