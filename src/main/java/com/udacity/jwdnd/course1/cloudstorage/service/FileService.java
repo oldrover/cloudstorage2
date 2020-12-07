@@ -14,6 +14,10 @@ public class FileService {
         this.fileDataMapper = fileDataMapper;
     }
 
+    public boolean isFileNameAvailable(String userName, String fileName){
+        return fileDataMapper.isAvailable(userName, fileName) == null;
+    }
+
     public int addFile(FileData fileData) {
         return fileDataMapper.insertFile(fileData);
     }
