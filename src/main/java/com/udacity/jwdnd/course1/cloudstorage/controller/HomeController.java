@@ -82,7 +82,7 @@ public class HomeController {
         return "result";
     }
 
-    //Mapping for adding or updating a aredential
+    //Mapping for adding or updating a credential
     @PostMapping("/credential")
     public String addorUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
         User user = userService.getUser(auth.getName());
@@ -115,6 +115,7 @@ public class HomeController {
 
         }
         fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes()));
+        model.addAttribute("success",true);
         return "result";
     }
 
