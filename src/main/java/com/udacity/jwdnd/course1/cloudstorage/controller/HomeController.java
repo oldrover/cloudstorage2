@@ -46,20 +46,6 @@ public class HomeController {
         return "home";
     }
 
-    /*
-    @PostMapping
-    public String homePageAction(Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
-        User user = userService.getUser(auth.getName());
-
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
-        return "home";
-
-
-    }
-    */
-
     //Mapping for adding or updating a Note
     @PostMapping("/note")
     public String addOrUpdateNote(@RequestParam(required = false) Integer id, NoteForm noteForm, Authentication auth, Model model) {
@@ -156,6 +142,13 @@ public class HomeController {
             return "result";
 
         }
+        if(!fileService.isFileNameAvailable(user.getUserId(), fileUpload.getOriginalFilename())){
+            model.addAttribute("success",false);
+            model.addAttribute("errorMessage","Filename already exists!");
+            return "result";
+
+        }
+
         fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes()));
         model.addAttribute("success",true);
         model.addAttribute("successMessage","File saved!");
