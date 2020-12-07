@@ -16,8 +16,8 @@ public class FileService {
         this.fileDataMapper = fileDataMapper;
     }
 
-    public int addFile(User user, FileForm fileForm) {
-        return fileDataMapper.insertFile(new FileData(null,fileForm.getFileName(),fileForm.getContentType(),fileForm.getFileSize(),user.getUserId(),fileForm.getFile()));
+    public int addFile(FileData fileData) {
+        return fileDataMapper.insertFile(fileData);
     }
 
     public int deleteFile(Integer fileId){
