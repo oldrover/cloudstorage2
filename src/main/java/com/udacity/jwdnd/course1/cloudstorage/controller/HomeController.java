@@ -62,29 +62,50 @@ public class HomeController {
 
     //Mapping for adding or updating a Note
     @PostMapping("/note")
-    public String addOrUpdateNote(@RequestParam(required = false) Integer id, NoteForm noteForm, Authentication auth) {
+    public String addOrUpdateNote(@RequestParam(required = false) Integer id, NoteForm noteForm, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         if(noteForm.getNoteId() == null) {
-            this.noteService.addNote(user, noteForm);
+            if(this.noteService.addNote(user, noteForm) == 1) {
+                model.addAttribute("success",true);
+                model.addAttribute("successMessage","Note saved!");
+
+            }else{
+                model.addAttribute("success",false);
+                model.addAttribute("errorMessage","Note was not saved!");
+            }
         }
         else {
-            this.noteService.updateNote(noteForm);
-        }
+            if(this.noteService.updateNote(noteForm) == 1) {
+                model.addAttribute("success",true);
+                model.addAttribute("successMessage","Your changes were successfully saved!");
 
+            }else{
+                model.addAttribute("success",false);
+                model.addAttribute("errorMessage","Changes were not saved!");
+            }
+
+        }
         return "result";
     }
 
     //Mapping for deleting a Note
     @PostMapping("/note/delete/{noteId}")
-    public String deleteNote(@PathVariable Integer noteId, Authentication auth){
+    public String deleteNote(@PathVariable Integer noteId, Authentication auth, Model model){
         User user = userService.getUser(auth.getName());
-        this.noteService.deleteNote(noteId);
+        if(this.noteService.deleteNote(noteId) == 1) {
+                model.addAttribute("success",true);
+                model.addAttribute("successMessage","Note deleted!");
+
+            }else{
+                model.addAttribute("success",false);
+                model.addAttribute("errorMessage","Note was not deleted!");
+            }
         return "result";
     }
 
     //Mapping for adding or updating a credential
     @PostMapping("/credential")
-    public String addorUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
+    public String addOrUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth) {
         User user = userService.getUser(auth.getName());
         if(credentialForm.getCredentialId() == null) {
             this.credentialService.addCredential(user, credentialForm);
@@ -110,12 +131,13 @@ public class HomeController {
         User user = userService.getUser(auth.getName());
         if(fileUpload.isEmpty()) {
             model.addAttribute("success",false);
-            model.addAttribute("message","No file selected to upload!");
+            model.addAttribute("errorMessage","No file selected to upload!");
             return "result";
 
         }
         fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes()));
         model.addAttribute("success",true);
+        model.addAttribute("successMessage","File saved!");
         return "result";
     }
 
