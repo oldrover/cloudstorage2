@@ -16,4 +16,7 @@ public interface FileDataMapper {
 
     @Delete("DELETE FROM FILES WHERE fileId = #{fileId}")
     int deleteFile(Integer fileId);
+
+    @Select("SELECT * FROM FILES WHERE fileId = #{fileId}")
+    FileData viewFile(Integer fileId);
 }
