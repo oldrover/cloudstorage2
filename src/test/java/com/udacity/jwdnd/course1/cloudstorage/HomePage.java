@@ -144,6 +144,9 @@ public class HomePage {
     public void clearCredentialPassword() {
         credentialPassword.clear();
     }
+    public String getCredentialPassword() {
+        return credentialPassword.getText();
+    }
 
 
 

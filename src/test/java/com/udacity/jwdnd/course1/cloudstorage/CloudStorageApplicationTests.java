@@ -174,7 +174,7 @@ class CloudStorageApplicationTests {
 		homePage.clickCredentialsTab();
 		homePage.clickEditCredential();
 		Thread.sleep(5000);
-		Assertions.assertEquals("password", driver.findElement(By.ById.id("credential-password")).getText());
+		Assertions.assertEquals("password", homePage.getCredentialPassword());
 		homePage.clearCredentialUrl();
 		homePage.clearCredentialUsername();
 		homePage.clearCredentialPassword();
@@ -187,6 +187,20 @@ class CloudStorageApplicationTests {
 		Assertions.assertEquals("http://editedtest.com", driver.findElement(By.ById.id("credentialUrl")).getText());
 		Assertions.assertEquals("editeduser", driver.findElement(By.ById.id("credentialUsername")).getText());
 		Assertions.assertNotEquals("editedpassword", driver.findElement(By.ById.id("credentialPassword")).getText());
+	}
+
+	/*
+		signs up a new user, then logs in, creates a credential and verifies it is displayed
+		then deletes the credential and verifies it is no longer displayed
+	 */
+	@Test
+	public void deleteCredentialAndVerify() {
+		createACredentialAndDisplay();
+		homePage.clickDeleteCredential();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickDeleteCredential();
+		Assertions.assertTrue(driver.findElements(By.ById.id("credentialUrl")).isEmpty());
+
 	}
 
 	public void signupJohnDoe() {
