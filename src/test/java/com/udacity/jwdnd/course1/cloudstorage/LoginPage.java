@@ -19,6 +19,14 @@ public class LoginPage {
     @FindBy(id= "signupLink")
     private WebElement signupLink;
 
+    @FindBy(id= "logoutMsg")
+    private WebElement logoutMsg;
+
+    @FindBy(id= "errorMsg")
+    private WebElement errorMsg;
+
+
+
     public LoginPage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
     }
@@ -37,6 +45,13 @@ public class LoginPage {
 
     public void clickSignupLink() {
         signupLink.click();
+    }
 
+    public String getErrorMsg() {
+        return errorMsg.getText();
+    }
+
+    public String getLogoutMsg() {
+        return logoutMsg.getText();
     }
 }
