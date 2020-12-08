@@ -85,8 +85,8 @@
                                         <td>
 
                                             <form action="#" th:action="@{'/home/note/delete/' + ${note.noteId}}" method="POST">
-                                                <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
-                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                                <button type="button" id="buttonEditNote" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
+                                                <button type="submit" id="buttonDeleteNote" class="btn btn-danger">Delete</button>
                                             </form>
                                         </td>
                                         <th id="noteTitle" th:text="${note.noteTitle}" scope="row">Example Note Title</th>
