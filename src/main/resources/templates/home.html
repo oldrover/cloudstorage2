@@ -148,8 +148,8 @@
                                 <tr th:each="credential : ${credentials}">
                                     <td>
                                         <form action="#" th:action="@{'/home/credential/delete/' + ${credential.credentialId}}" method="POST">
-                                            <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.decryptedPassword}')|">Edit</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            <button type="button" id="buttonEditCredential" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.decryptedPassword}')|">Edit</button>
+                                            <button type="submit" button="buttonDeleteCredential" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
                                     <th id="credentialUrl" th:text="${credential.url}" scope="row">Example Credential URL</th>
@@ -189,7 +189,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save</button>
+                                        <button type="button" id="submitCredential" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save</button>
                                     </div>
                                 </div>
                             </div>
