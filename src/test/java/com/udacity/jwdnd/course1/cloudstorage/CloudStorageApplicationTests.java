@@ -150,15 +150,43 @@ class CloudStorageApplicationTests {
 		loginJohnDoe();
 		homePage.clickCredentialsTab();
 		homePage.clickCreateCredential();
-		//
-		homePage.setNoteTitle("test title");
-		homePage.setNoteDescription("test description");
-		homePage.clickNoteSubmit();
+		homePage.setCredentialUrl("http://test.com");
+		homePage.setCredentialUsername("testuser");
+		homePage.setCredentialPassword("password");
+		homePage.clickCredentialSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
-		homePage.clickNotesTab();
-		Assertions.assertEquals("test title", driver.findElement(By.ById.id("noteTitle")).getText());
-		Assertions.assertEquals("test description", driver.findElement(By.ById.id("noteDescription")).getText());
+		homePage.clickCredentialsTab();
+		Assertions.assertEquals("http://test.com", driver.findElement(By.ById.id("credentialUrl")).getText());
+		Assertions.assertEquals("testuser", driver.findElement(By.ById.id("credentialUsername")).getText());
+		Assertions.assertNotEquals("password", driver.findElement(By.ById.id("credentialPassword")).getText());
 
+	}
+
+	/*
+		signs up a new user, then logs in, creates a credential and verifies it is displayed
+		then opens the edit modal, checks if the password is decrypted. Then it edits the credential
+		and checks if it is displayed correctly
+	 */
+
+	@Test
+	public void editCredentialAndVerify() throws InterruptedException {
+		createACredentialAndDisplay();
+		homePage.clickCredentialsTab();
+		homePage.clickEditCredential();
+		Thread.sleep(5000);
+		Assertions.assertEquals("password", driver.findElement(By.ById.id("credential-password")).getText());
+		homePage.clearCredentialUrl();
+		homePage.clearCredentialUsername();
+		homePage.clearCredentialPassword();
+		homePage.setCredentialUrl("http://editedtest.com");
+		homePage.setCredentialUsername("editeduser");
+		homePage.setCredentialPassword("editedpassword");
+		homePage.clickCredentialSubmit();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickCredentialsTab();
+		Assertions.assertEquals("http://editedtest.com", driver.findElement(By.ById.id("credentialUrl")).getText());
+		Assertions.assertEquals("editeduser", driver.findElement(By.ById.id("credentialUsername")).getText());
+		Assertions.assertNotEquals("editedpassword", driver.findElement(By.ById.id("credentialPassword")).getText());
 	}
 
 	public void signupJohnDoe() {
