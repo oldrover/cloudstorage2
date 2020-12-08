@@ -37,7 +37,23 @@ public class HomePage {
     @FindBy(id= "buttonEditNote")
     private WebElement buttonEditNote;
 
+    @FindBy(id= "credential-url")
+    private WebElement credentialUrl;
 
+    @FindBy(id= "credential-username")
+    private WebElement credentialUsername;
+
+    @FindBy(id= "credential-password")
+    private WebElement credentialPassword;
+
+    @FindBy(id= "submitCredential")
+    private WebElement submitCredential;
+
+    @FindBy(id= "buttonDeleteCredential")
+    private WebElement buttonDeleteCredential;
+
+    @FindBy(id= "buttonEditCredential")
+    private WebElement buttonEditCredential;
 
 
     public HomePage(WebDriver webDriver) {
@@ -91,5 +107,44 @@ public class HomePage {
     public void clearNoteDescription() {
         noteDescription.clear();
     }
+
+    public void setCredentialUrl(String url) {
+        credentialUrl.sendKeys(url);
+
+    }
+
+    public void setCredentialUsername(String username) {
+        credentialUsername.sendKeys(username);
+    }
+
+    public void setCredentialPassword(String password) {
+        credentialPassword.sendKeys(password);
+    }
+
+    public void clickCredentialSubmit() {
+        submitCredential.click();
+    }
+
+    public void clickDeleteCredential() {
+        buttonDeleteCredential.click();
+    }
+
+    public void clickEditCredential() {
+        buttonEditCredential.click();
+    }
+
+    public void clearCredentialUrl() {
+        credentialUrl.clear();
+    }
+
+    public void clearCredentialUsername() {
+        credentialUsername.clear();
+    }
+
+    public void clearCredentialPassword() {
+        credentialPassword.clear();
+    }
+
+
 
 }
