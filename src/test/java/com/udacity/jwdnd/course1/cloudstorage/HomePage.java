@@ -84,4 +84,12 @@ public class HomePage {
         buttonEditNote.click();
     }
 
+    public void clearNoteTitle() {
+        noteTitle.clear();
+    }
+
+    public void clearNoteDescription() {
+        noteDescription.clear();
+    }
+
 }

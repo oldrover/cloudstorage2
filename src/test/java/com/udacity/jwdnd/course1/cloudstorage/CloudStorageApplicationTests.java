@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
@@ -26,11 +27,15 @@ class CloudStorageApplicationTests {
 	@BeforeAll
 	static void beforeAll() {
 		WebDriverManager.firefoxdriver().setup();
+
 	}
 
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new FirefoxDriver();
+		this.homePage = new HomePage(driver);
+		this.loginPage = new LoginPage(driver);
+		this.signupPage = new SignupPage(driver);
 	}
 
 	@AfterEach
@@ -73,7 +78,6 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void signupLoginAndLogout() {
-		homePage = new HomePage(driver);
 		signupJohnDoe();
 		loginJohnDoe();
 		Assertions.assertEquals("Home", driver.getTitle());
@@ -89,7 +93,6 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void createANoteAndDisplay(){
-		homePage = new HomePage(driver);
 		signupJohnDoe();
 		loginJohnDoe();
 		homePage.clickNotesTab();
@@ -111,15 +114,33 @@ class CloudStorageApplicationTests {
 	@Test
 	public void editNoteAndVerify() {
 		createANoteAndDisplay();
+		homePage.clickEditNote();
+		homePage.clearNoteTitle();
+		homePage.clearNoteDescription();
+		homePage.setNoteTitle("edited title");
+		homePage.setNoteDescription("edited description");
+		homePage.clickNoteSubmit();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickNotesTab();
+		Assertions.assertEquals("edited title", driver.findElement(By.ById.id("noteTitle")).getText());
+		Assertions.assertEquals("edited description", driver.findElement(By.ById.id("noteDescription")).getText());
+	}
 
-
+	/*
+		signs up a new user, then logs in, creates a note and verifies it is displayed
+		then deletes the note and verifies it is no longer displayed
+	 */
+	@Test
+	public void deleteNoteAndVerify() {
+		createANoteAndDisplay();
+		homePage.clickDeleteNote();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickNotesTab();
+		Assertions.assertTrue(driver.findElements(By.ById.id("noteTitle")).isEmpty());
 
 	}
 
-
-
 	public void signupJohnDoe() {
-		signupPage = new SignupPage(driver);
 		driver.get("http://localhost:" + this.port + "/signup");
 		signupPage.setFirstName("John");
 		signupPage.setLastName("Doe");
@@ -127,16 +148,13 @@ class CloudStorageApplicationTests {
 		signupPage.setPassword("password");
 		signupPage.clickSubmitButton();
 		signupPage.clickLoginLink();
-
 	}
 
 	public void loginJohnDoe() {
-		loginPage = new LoginPage(driver);
 		driver.get("http://localhost:" + this.port + "/login");
 		loginPage.setUsername("johndoe");
 		loginPage.setPassword("password");
 		loginPage.clickLoginButton();
-
 	}
 
 }
