@@ -31,6 +31,12 @@ public class HomePage {
     @FindBy(id= "submitNote")
     private WebElement submitNote;
 
+    @FindBy(id= "buttonDeleteNote")
+    private WebElement buttonDeleteNote;
+
+    @FindBy(id= "buttonEditNote")
+    private WebElement buttonEditNote;
+
 
 
 
@@ -68,6 +74,14 @@ public class HomePage {
 
     public void clickNoteSubmit() {
         submitNote.click();
+    }
+
+    public void clickDeleteNote() {
+        buttonDeleteNote.click();
+    }
+
+    public void clickEditNote() {
+        buttonEditNote.click();
     }
 
 }
