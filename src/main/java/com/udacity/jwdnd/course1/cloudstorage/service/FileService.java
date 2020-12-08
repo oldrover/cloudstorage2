@@ -22,8 +22,8 @@ public class FileService {
         return fileDataMapper.insertFile(fileData);
     }
 
-    public FileData viewFile(Integer fileId){
-        return fileDataMapper.viewFile(fileId);
+    public FileData viewFile(Integer userId, Integer fileId){
+        return fileDataMapper.viewFile(userId, fileId);
     }
 
     public int deleteFile(Integer fileId){

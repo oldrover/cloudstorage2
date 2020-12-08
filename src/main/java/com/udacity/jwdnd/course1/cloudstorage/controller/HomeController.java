@@ -164,9 +164,9 @@ public class HomeController {
 
     //Mapping for downloading a file
     @GetMapping("/file/view/{fileId}")
-    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable Integer fileId, Authentication auth) {
+    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable Integer fileId, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
-        FileData file = fileService.viewFile(fileId);
+        FileData file = fileService.viewFile(user.getUserId(), fileId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(file.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFileName() + "\"")
