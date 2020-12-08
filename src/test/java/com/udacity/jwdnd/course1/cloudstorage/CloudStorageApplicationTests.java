@@ -15,6 +15,9 @@ class CloudStorageApplicationTests {
 	private int port;
 
 	private WebDriver driver;
+	private LoginPage loginPage;
+	private SignupPage signupPage;
+	private HomePage homePage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -37,6 +40,54 @@ class CloudStorageApplicationTests {
 	public void getLoginPage() {
 		driver.get("http://localhost:" + this.port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
+	}
+
+	/*
+	tests if the homepage is not accessible for unauthorized users and posts right error message
+	and if login and signup page is accessible
+	 */
+	@Test
+	public void ifNotAccessible() {
+		driver.get("http://localhost:" + this.port + "/login");
+		loginPage = new LoginPage(driver);
+		loginPage.setUsername("wrongusername");
+		loginPage.setPassword("wrongpassword");
+		loginPage.clickLoginButton();
+		Assertions.assertNotEquals("Home", driver.getTitle());
+		Assertions.assertEquals("Invalid username or password",loginPage.getErrorMsg());
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertNotEquals("Home", driver.getTitle());
+		Assertions.assertEquals("Login", driver.getTitle());
+		driver.get("http://localhost:" + this.port + "/signup");
+		Assertions.assertEquals("Sign Up", driver.getTitle());
+
+	}
+
+	/*
+	signs up a new user, then logs in, checks if the user is landing on the homepage
+	 and logs out again and checks if homepage is no more accessible
+	 */
+	@Test
+	public void signupLoginAndLogout() {
+		signupPage = new SignupPage(driver);
+		loginPage = new LoginPage(driver);
+		homePage = new HomePage(driver);
+		driver.get("http://localhost:" + this.port + "/signup");
+		signupPage.setFirstName("John");
+		signupPage.setLastName("Doe");
+		signupPage.setUsername("johndoe");
+		signupPage.setPassword("password");
+		signupPage.clickSubmitButton();
+		signupPage.clickLoginLink();
+		loginPage.setUsername("johndoe");
+		loginPage.setPassword("password");
+		loginPage.clickLoginButton();
+		Assertions.assertEquals("Home", driver.getTitle());
+		homePage.clickLogoutButton();
+		Assertions.assertEquals("Login", driver.getTitle());
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertNotEquals("Home", driver.getTitle());
+
 	}
 
 }
