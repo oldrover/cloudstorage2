@@ -28,8 +28,8 @@ public class HomePage {
     @FindBy(id= "note-title")
     private WebElement noteTitle;
 
-    @FindBy(id= "noteSubmit")
-    private WebElement noteSubmit;
+    @FindBy(id= "submitNote")
+    private WebElement submitNote;
 
 
 
@@ -63,11 +63,11 @@ public class HomePage {
     }
 
     public void setNoteDescription(String description) {
-        noteTitle.sendKeys(description);
+        noteDescription.sendKeys(description);
     }
 
     public void clickNoteSubmit() {
-        noteSubmit.click();
+        submitNote.click();
     }
 
 }

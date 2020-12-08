@@ -2,11 +2,15 @@ package com.udacity.jwdnd.course1.cloudstorage;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+
+import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CloudStorageApplicationTests {
@@ -43,8 +47,8 @@ class CloudStorageApplicationTests {
 	}
 
 	/*
-	tests if the homepage is not accessible for unauthorized users and posts right error message
-	and if login and signup page is accessible
+		tests if the homepage is not accessible for unauthorized users and posts right error message
+		and if login and signup page is accessible
 	 */
 	@Test
 	public void ifNotAccessible() {
@@ -64,8 +68,8 @@ class CloudStorageApplicationTests {
 	}
 
 	/*
-	signs up a new user, then logs in, checks if the user is landing on the homepage
-	 and logs out again and checks if homepage is no more accessible
+		signs up a new user, then logs in, checks if the user is landing on the homepage
+		and logs out again and checks if homepage is no more accessible
 	 */
 	@Test
 	public void signupLoginAndLogout() {
@@ -81,8 +85,36 @@ class CloudStorageApplicationTests {
 	}
 
 	/*
-	signs up a new user, then logs in, creates a note and verifies it is displayed
+		signs up a new user, then logs in, creates a note and verifies it is displayed
 	 */
+	@Test
+	public void createANoteAndDisplay(){
+		homePage = new HomePage(driver);
+		signupJohnDoe();
+		loginJohnDoe();
+		homePage.clickNotesTab();
+		homePage.clickCreateNote();
+		homePage.setNoteTitle("test title");
+		homePage.setNoteDescription("test description");
+		homePage.clickNoteSubmit();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickNotesTab();
+		Assertions.assertEquals("test title", driver.findElement(By.ById.id("noteTitle")).getText());
+		Assertions.assertEquals("test description", driver.findElement(By.ById.id("noteDescription")).getText());
+
+	}
+
+	/*
+		signs up a new user, then logs in, creates a note and verifies it is displayed
+		then edits the note and verifies that the changes are displayed correctly
+	 */
+	@Test
+	public void editNoteAndVerify() {
+		createANoteAndDisplay();
+
+
+
+	}
 
 
 
@@ -95,7 +127,6 @@ class CloudStorageApplicationTests {
 		signupPage.setPassword("password");
 		signupPage.clickSubmitButton();
 		signupPage.clickLoginLink();
-
 
 	}
 
