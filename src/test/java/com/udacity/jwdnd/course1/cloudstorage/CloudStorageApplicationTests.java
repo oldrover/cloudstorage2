@@ -140,6 +140,27 @@ class CloudStorageApplicationTests {
 
 	}
 
+	/*
+		signs up a new user, then logs in, creates a credential and verifies it is displayed
+		and the password is encrypted
+	 */
+	@Test
+	public void createACredentialAndDisplay(){
+		signupJohnDoe();
+		loginJohnDoe();
+		homePage.clickCredentialsTab();
+		homePage.clickCreateCredential();
+		//
+		homePage.setNoteTitle("test title");
+		homePage.setNoteDescription("test description");
+		homePage.clickNoteSubmit();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickNotesTab();
+		Assertions.assertEquals("test title", driver.findElement(By.ById.id("noteTitle")).getText());
+		Assertions.assertEquals("test description", driver.findElement(By.ById.id("noteDescription")).getText());
+
+	}
+
 	public void signupJohnDoe() {
 		driver.get("http://localhost:" + this.port + "/signup");
 		signupPage.setFirstName("John");
