@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
+import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
@@ -7,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -23,6 +25,9 @@ class CloudStorageApplicationTests {
 	private LoginPage loginPage;
 	private SignupPage signupPage;
 	private HomePage homePage;
+
+	@Autowired
+	private CredentialService credentialService;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -158,6 +163,8 @@ class CloudStorageApplicationTests {
 		homePage.clickCredentialsTab();
 		Assertions.assertEquals("http://test.com", driver.findElement(By.ById.id("credentialUrl")).getText());
 		Assertions.assertEquals("testuser", driver.findElement(By.ById.id("credentialUsername")).getText());
+
+		//password encryption check
 		Assertions.assertNotEquals("password", driver.findElement(By.ById.id("credentialPassword")).getText());
 
 	}
@@ -174,7 +181,7 @@ class CloudStorageApplicationTests {
 		homePage.clickCredentialsTab();
 		homePage.clickEditCredential();
 		Thread.sleep(5000);
-		Assertions.assertEquals("password", homePage.getCredentialPassword());
+		Assertions.assertEquals("password", driver.findElement(By.ById.id("credential-password")).getAttribute("value"));
 		homePage.clearCredentialUrl();
 		homePage.clearCredentialUsername();
 		homePage.clearCredentialPassword();
@@ -194,11 +201,11 @@ class CloudStorageApplicationTests {
 		then deletes the credential and verifies it is no longer displayed
 	 */
 	@Test
-	public void deleteCredentialAndVerify() {
+	public void deleteCredentialAndVerify(){
 		createACredentialAndDisplay();
 		homePage.clickDeleteCredential();
 		driver.get("http://localhost:" + this.port + "/home");
-		homePage.clickDeleteCredential();
+		homePage.clickCredentialsTab();
 		Assertions.assertTrue(driver.findElements(By.ById.id("credentialUrl")).isEmpty());
 
 	}
