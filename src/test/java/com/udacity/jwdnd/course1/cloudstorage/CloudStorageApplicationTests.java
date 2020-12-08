@@ -69,9 +69,25 @@ class CloudStorageApplicationTests {
 	 */
 	@Test
 	public void signupLoginAndLogout() {
-		signupPage = new SignupPage(driver);
-		loginPage = new LoginPage(driver);
 		homePage = new HomePage(driver);
+		signupJohnDoe();
+		loginJohnDoe();
+		Assertions.assertEquals("Home", driver.getTitle());
+		homePage.clickLogoutButton();
+		Assertions.assertEquals("Login", driver.getTitle());
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertNotEquals("Home", driver.getTitle());
+
+	}
+
+	/*
+	signs up a new user, then logs in, creates a note and verifies it is displayed
+	 */
+
+
+
+	public void signupJohnDoe() {
+		signupPage = new SignupPage(driver);
 		driver.get("http://localhost:" + this.port + "/signup");
 		signupPage.setFirstName("John");
 		signupPage.setLastName("Doe");
@@ -79,14 +95,16 @@ class CloudStorageApplicationTests {
 		signupPage.setPassword("password");
 		signupPage.clickSubmitButton();
 		signupPage.clickLoginLink();
+
+
+	}
+
+	public void loginJohnDoe() {
+		loginPage = new LoginPage(driver);
+		driver.get("http://localhost:" + this.port + "/login");
 		loginPage.setUsername("johndoe");
 		loginPage.setPassword("password");
 		loginPage.clickLoginButton();
-		Assertions.assertEquals("Home", driver.getTitle());
-		homePage.clickLogoutButton();
-		Assertions.assertEquals("Login", driver.getTitle());
-		driver.get("http://localhost:" + this.port + "/home");
-		Assertions.assertNotEquals("Home", driver.getTitle());
 
 	}
 
