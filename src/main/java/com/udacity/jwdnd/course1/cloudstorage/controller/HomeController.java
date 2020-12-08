@@ -149,10 +149,17 @@ public class HomeController {
 
         }
 
-        fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes()));
-        model.addAttribute("success",true);
-        model.addAttribute("successMessage","File saved!");
-        return "result";
+        if(fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes())) == 1) {
+            model.addAttribute("success",true);
+            model.addAttribute("successMessage","File saved!");
+            return "result";
+        }else {
+            model.addAttribute("success",false);
+            model.addAttribute("successMessage","File was not saved!");
+            return "result";
+
+        }
+
     }
 
     //Mapping for downloading a file
