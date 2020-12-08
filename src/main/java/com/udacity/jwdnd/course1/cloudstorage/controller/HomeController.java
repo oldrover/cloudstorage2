@@ -76,8 +76,7 @@ public class HomeController {
 
     //Mapping for deleting a Note
     @PostMapping("/note/delete/{noteId}")
-    public String deleteNote(@PathVariable Integer noteId, Authentication auth, Model model){
-        User user = userService.getUser(auth.getName());
+    public String deleteNote(@PathVariable Integer noteId, Model model){
         if(this.noteService.deleteNote(noteId) == 1) {
                 model.addAttribute("success",true);
                 model.addAttribute("successMessage","Note deleted!");
@@ -118,8 +117,7 @@ public class HomeController {
 
     //Mapping for deleting a credential
     @PostMapping("/credential/delete/{credentialId}")
-    public String deleteCredential(@PathVariable Integer credentialId, Authentication auth, Model model){
-        User user = userService.getUser(auth.getName());
+    public String deleteCredential(@PathVariable Integer credentialId, Model model){
         if(this.credentialService.deleteCredential(credentialId) == 1) {
             model.addAttribute("success",true);
             model.addAttribute("successMessage","Credential deleted!");
@@ -175,8 +173,7 @@ public class HomeController {
 
     //Mapping for deleting a file
     @PostMapping("/file/delete/{fileId}")
-    public String deleteFile(@PathVariable Integer fileId, Authentication auth, Model model) {
-        User user = userService.getUser(auth.getName());
+    public String deleteFile(@PathVariable Integer fileId, Model model) {
         if(this.fileService.deleteFile(fileId) == 1) {
             model.addAttribute("success",true);
             model.addAttribute("successMessage","File successfully deleted!");
