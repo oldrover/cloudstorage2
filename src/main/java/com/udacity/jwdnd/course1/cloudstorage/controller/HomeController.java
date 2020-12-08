@@ -48,7 +48,7 @@ public class HomeController {
 
     //Mapping for adding or updating a Note
     @PostMapping("/note")
-    public String addOrUpdateNote(@RequestParam(required = false) Integer id, NoteForm noteForm, Authentication auth, Model model) {
+    public String addOrUpdateNote(NoteForm noteForm, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         if(noteForm.getNoteId() == null) {
             if(this.noteService.addNote(user, noteForm) == 1) {
