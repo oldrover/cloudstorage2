@@ -16,9 +16,26 @@ public class HomePage {
     @FindBy(id= "nav-credentials-tab")
     private WebElement navCredentialsTab;
 
+    @FindBy(id= "buttonCreateNote")
+    private WebElement buttonCreateNote;
+
+    @FindBy(id= "buttonCreateCredential")
+    private WebElement buttonCreateCredential;
+
+    @FindBy(id= "note-description")
+    private WebElement noteDescription;
+
+    @FindBy(id= "note-title")
+    private WebElement noteTitle;
+
+    @FindBy(id= "noteSubmit")
+    private WebElement noteSubmit;
+
+
+
+
     public HomePage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
-
     }
 
     public void clickLogoutButton() {
@@ -31,6 +48,26 @@ public class HomePage {
 
     public void clickCredentialsTab() {
         navCredentialsTab.click();
+    }
+
+    public void clickCreateNote() {
+        buttonCreateNote.click();
+    }
+
+    public void clickCreateCredential() {
+        buttonCreateCredential.click();
+    }
+
+    public void setNoteTitle(String title) {
+        noteTitle.sendKeys(title);
+    }
+
+    public void setNoteDescription(String description) {
+        noteTitle.sendKeys(description);
+    }
+
+    public void clickNoteSubmit() {
+        noteSubmit.click();
     }
 
 }
