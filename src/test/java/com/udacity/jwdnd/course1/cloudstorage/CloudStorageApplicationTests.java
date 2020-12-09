@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.RemoteWebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -25,9 +26,6 @@ class CloudStorageApplicationTests {
 	private LoginPage loginPage;
 	private SignupPage signupPage;
 	private HomePage homePage;
-
-	@Autowired
-	private CredentialService credentialService;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -107,9 +105,14 @@ class CloudStorageApplicationTests {
 		homePage.clickNoteSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage.clickNotesTab();
-		Assertions.assertEquals("test title", driver.findElement(By.ById.id("noteTitle")).getText());
-		Assertions.assertEquals("test description", driver.findElement(By.ById.id("noteDescription")).getText());
-
+		List<WebElement> resultTitle = driver.findElements(By.ById.id("noteTitle"));
+		List<WebElement> resultDescription = driver.findElements(By.ById.id("noteDescription"));
+		Assertions.assertTrue(resultTitle.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "test title".equals(text)));
+		Assertions.assertTrue(resultDescription.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "test description".equals(text)));
 	}
 
 	/*
@@ -127,21 +130,35 @@ class CloudStorageApplicationTests {
 		homePage.clickNoteSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage.clickNotesTab();
-		Assertions.assertEquals("edited title", driver.findElement(By.ById.id("noteTitle")).getText());
-		Assertions.assertEquals("edited description", driver.findElement(By.ById.id("noteDescription")).getText());
+		List<WebElement> resultTitle = driver.findElements(By.ById.id("noteTitle"));
+		List<WebElement> resultDescription = driver.findElements(By.ById.id("noteDescription"));
+		Assertions.assertTrue(resultTitle.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "edited title".equals(text)));
+		Assertions.assertTrue(resultDescription.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "edited description".equals(text)));
 	}
 
 	/*
-		signs up a new user, then logs in, creates a note and verifies it is displayed
+		signs up a new user, then logs in, creates a note,
 		then deletes the note and verifies it is no longer displayed
 	 */
 	@Test
 	public void deleteNoteAndVerify() {
-		createANoteAndDisplay();
-		homePage.clickDeleteNote();
+		signupJohnDoe();
+		loginJohnDoe();
+		homePage.clickNotesTab();
+		homePage.clickCreateNote();
+		homePage.setNoteTitle("deletion title");
+		homePage.setNoteDescription("deletion description");
+		homePage.clickNoteSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage.clickNotesTab();
-		Assertions.assertTrue(driver.findElements(By.ById.id("noteTitle")).isEmpty());
+		driver.findElement(By.name("deletion title")).click();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickNotesTab();
+		Assertions.assertTrue(driver.findElements(By.name("deletion title")).isEmpty());
 
 	}
 
@@ -161,9 +178,18 @@ class CloudStorageApplicationTests {
 		homePage.clickCredentialSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage.clickCredentialsTab();
-		Assertions.assertEquals("http://test.com", driver.findElement(By.ById.id("credentialUrl")).getText());
-		Assertions.assertEquals("testuser", driver.findElement(By.ById.id("credentialUsername")).getText());
-		Assertions.assertNotEquals("password", driver.findElement(By.ById.id("credentialPassword")).getText());
+		List<WebElement> resultUrl = driver.findElements(By.ById.id("credentialUrl"));
+		List<WebElement> resultUsername = driver.findElements(By.ById.id("credentialUsername"));
+		List<WebElement> resultPassword = driver.findElements(By.ById.id("credentialPassword"));
+		Assertions.assertTrue(resultUrl.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "http://test.com".equals(text)));
+		Assertions.assertTrue(resultUsername.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "testuser".equals(text)));
+		Assertions.assertFalse(resultPassword.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "password".equals(text)));
 
 	}
 
@@ -188,22 +214,38 @@ class CloudStorageApplicationTests {
 		homePage.clickCredentialSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage.clickCredentialsTab();
-		Assertions.assertEquals("http://editedtest.com", driver.findElement(By.ById.id("credentialUrl")).getText());
-		Assertions.assertEquals("editeduser", driver.findElement(By.ById.id("credentialUsername")).getText());
-		Assertions.assertNotEquals("editedpassword", driver.findElement(By.ById.id("credentialPassword")).getText());
+		List<WebElement> resultUrl = driver.findElements(By.ById.id("credentialUrl"));
+		List<WebElement> resultUsername = driver.findElements(By.ById.id("credentialUsername"));
+		Assertions.assertTrue(resultUrl.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "http://editedtest.com".equals(text)));
+		Assertions.assertTrue(resultUsername.stream()
+				.map(WebElement::getText)
+				.anyMatch(text -> "editeduser".equals(text)));
+
 	}
 
 	/*
-		signs up a new user, then logs in, creates a credential and verifies it is displayed
+		signs up a new user, then logs in, creates a credential,
 		then deletes the credential and verifies it is no longer displayed
 	 */
 	@Test
 	public void deleteCredentialAndVerify(){
-		createACredentialAndDisplay();
-		homePage.clickDeleteCredential();
+		signupJohnDoe();
+		loginJohnDoe();
+		homePage.clickCredentialsTab();
+		homePage.clickCreateCredential();
+		homePage.setCredentialUrl("http://delete.com");
+		homePage.setCredentialUsername("deleteuser");
+		homePage.setCredentialPassword("deletepassword");
+		homePage.clickCredentialSubmit();
 		driver.get("http://localhost:" + this.port + "/home");
 		homePage.clickCredentialsTab();
-		Assertions.assertTrue(driver.findElements(By.ById.id("credentialUrl")).isEmpty());
+		//homePage.clickDeleteCredential();
+		driver.findElement(By.name("http://delete.com")).click();
+		driver.get("http://localhost:" + this.port + "/home");
+		homePage.clickCredentialsTab();
+		Assertions.assertTrue(driver.findElements(By.name("http://delete.com")).isEmpty());
 
 	}
 
@@ -214,7 +256,10 @@ class CloudStorageApplicationTests {
 		signupPage.setUsername("johndoe");
 		signupPage.setPassword("password");
 		signupPage.clickSubmitButton();
-		signupPage.clickLoginLink();
+		if(driver.getTitle() == "Sign Up") {
+			signupPage.clickBackToLogin();
+		}
+
 	}
 
 	public void loginJohnDoe() {

@@ -25,6 +25,9 @@ public class SignupPage {
     @FindBy(id= "loginLink")
     private WebElement loginlink;
 
+    @FindBy(id= "backToLogin")
+    private WebElement backToLogin;
+
     public SignupPage(WebDriver webDriver) {
         PageFactory.initElements(webDriver, this);
 
@@ -52,5 +55,7 @@ public class SignupPage {
     public void clickLoginLink() {
         loginlink.click();
     }
+
+    public void clickBackToLogin() { backToLogin.click(); }
 
 }
