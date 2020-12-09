@@ -90,7 +90,7 @@ public class HomeController {
 
     //Mapping for adding or updating a credential
     @PostMapping("/credential")
-    public String addOrUpdateCredential(@RequestParam(required = false) Integer credentialId, CredentialForm credentialForm, Authentication auth, Model model) {
+    public String addOrUpdateCredential(CredentialForm credentialForm, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         if(credentialForm.getCredentialId() == null) {
             if(this.credentialService.addCredential(user, credentialForm) == 1) {
@@ -129,10 +129,9 @@ public class HomeController {
         return "result";
     }
 
-
     //Mapping for uploading a file
     @PostMapping("/file")
-    public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication auth,NoteForm noteForm, CredentialForm credentialForm, Model model) throws IOException {
+    public String uploadFile(@RequestParam("fileUpload") MultipartFile fileUpload, Authentication auth, Model model) throws IOException {
         User user = userService.getUser(auth.getName());
         if(fileUpload.isEmpty()) {
             model.addAttribute("success",false);
@@ -150,13 +149,14 @@ public class HomeController {
         if(fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes())) == 1) {
             model.addAttribute("success",true);
             model.addAttribute("successMessage","File saved!");
-            return "result";
+
         }else {
             model.addAttribute("success",false);
             model.addAttribute("successMessage","File was not saved!");
-            return "result";
+
 
         }
+        return "result";
 
     }
 
