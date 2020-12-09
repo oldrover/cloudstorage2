@@ -163,24 +163,21 @@ class CloudStorageApplicationTests {
 		homePage.clickCredentialsTab();
 		Assertions.assertEquals("http://test.com", driver.findElement(By.ById.id("credentialUrl")).getText());
 		Assertions.assertEquals("testuser", driver.findElement(By.ById.id("credentialUsername")).getText());
-
-		//password encryption check
 		Assertions.assertNotEquals("password", driver.findElement(By.ById.id("credentialPassword")).getText());
 
 	}
 
 	/*
 		signs up a new user, then logs in, creates a credential and verifies it is displayed
-		then opens the edit modal, checks if the password is decrypted. Then it edits the credential
+		then opens the edit modal, checks if the password is correctly decrypted. Then edits the credential
 		and checks if it is displayed correctly
 	 */
 
 	@Test
-	public void editCredentialAndVerify() throws InterruptedException {
+	public void editCredentialAndVerify() {
 		createACredentialAndDisplay();
 		homePage.clickCredentialsTab();
 		homePage.clickEditCredential();
-		Thread.sleep(5000);
 		Assertions.assertEquals("password", driver.findElement(By.ById.id("credential-password")).getAttribute("value"));
 		homePage.clearCredentialUrl();
 		homePage.clearCredentialUsername();
