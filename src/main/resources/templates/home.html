@@ -86,7 +86,7 @@
 
                                             <form action="#" th:action="@{'/home/note/delete/' + ${note.noteId}}" method="POST">
                                                 <button type="button" id="buttonEditNote" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
-                                                <button type="submit" id="buttonDeleteNote" class="btn btn-danger">Delete</button>
+                                                <button type="submit" th:id="buttonDeleteNote" th:name="${note.noteTitle}" class="btn btn-danger">Delete</button>
                                             </form>
                                         </td>
                                         <th id="noteTitle" th:text="${note.noteTitle}" scope="row">Example Note Title</th>
@@ -149,7 +149,7 @@
                                     <td>
                                         <form action="#" th:action="@{'/home/credential/delete/' + ${credential.credentialId}}" method="POST">
                                             <button type="button" id="buttonEditCredential" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.decryptedPassword}')|">Edit</button>
-                                            <button type="submit" id="buttonDeleteCredential" class="btn btn-danger">Delete</button>
+                                            <button type="submit" id="buttonDeleteCredential" th:name="${credential.url}" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
                                     <th id="credentialUrl" th:text="${credential.url}" scope="row">Example Credential URL</th>
