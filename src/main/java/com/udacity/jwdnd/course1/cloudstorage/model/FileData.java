@@ -1,17 +1,24 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.File;
-
+@Entity
 public class FileData {
-    private Integer fileId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long fileId;
     private String fileName;
     private String contentType;
     private String fileSize;
-    private Integer userId;
+    private Long userId;
     private byte[] file;
 
+    public FileData(){}
 
-    public FileData(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, byte[] file) {
+    public FileData(Long fileId, String fileName, String contentType, String fileSize, Long userId, byte[] file) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
@@ -21,11 +28,11 @@ public class FileData {
     }
 
 
-    public Integer getFileId() {
+    public Long getFileId() {
         return fileId;
     }
 
-    public void setFileId(Integer fileId) {
+    public void setFileId(Long fileId) {
         this.fileId = fileId;
     }
 
@@ -53,11 +60,11 @@ public class FileData {
         this.fileSize = fileSize;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

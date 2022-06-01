@@ -1,9 +1,10 @@
 package com.udacity.jwdnd.course1.cloudstorage.service;
 
-import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
+import com.udacity.jwdnd.course1.cloudstorage.repository.CredentialRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -12,41 +13,40 @@ import java.util.List;
 
 @Service
 public class CredentialService {
-    private CredentialMapper credentialMapper;
-    private EncryptionService encryptionService;
 
-    public CredentialService(CredentialMapper credentialMapper, EncryptionService encryptionService) {
-        this.credentialMapper = credentialMapper;
-        this.encryptionService = encryptionService;
-    }
+    @Autowired
+    CredentialRepository credentialRepository;
 
-    public int addCredential(User user, CredentialForm credentialForm) {
+    @Autowired
+    EncryptionService encryptionService;
+
+    public Credential addCredential(User user, CredentialForm credentialForm) {
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
         random.nextBytes(key);
         String encodedKey = Base64.getEncoder().encodeToString(key);
         String encryptedPassword = encryptionService.encryptValue(credentialForm.getPassword(), encodedKey);
-        return credentialMapper.insertCredential(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), encodedKey,encryptedPassword, user.getUserId()));
+        return credentialRepository.save(new Credential(null,credentialForm.getUrl(), credentialForm.getUsername(), encodedKey,encryptedPassword, user.getUserId()));
 
     }
 
-    public int updateCredential(CredentialForm credentialForm) {
+    public Credential updateCredential(User user, CredentialForm credentialForm) {
         SecureRandom random = new SecureRandom();
         byte[] key = new byte[16];
         random.nextBytes(key);
         String encodedKey = Base64.getEncoder().encodeToString(key);
         String encryptedPassword = encryptionService.encryptValue(credentialForm.getPassword(), encodedKey);
-        return credentialMapper.updateCredential(new Credential(credentialForm.getCredentialId(),credentialForm.getUrl(), credentialForm.getUsername(), encodedKey, encryptedPassword, null));
+        return credentialRepository.save(new Credential(credentialForm.getCredentialId(),credentialForm.getUrl(), credentialForm.getUsername(), encodedKey, encryptedPassword, user.getUserId()));
     }
 
-    public int deleteCredential(Integer credentialId) {
-        return credentialMapper.deleteCredential(credentialId);
+    public void deleteCredential(Long credentialId) {
+        credentialRepository.deleteById(credentialId);
     }
 
-    public List<Credential> getCredentials(Integer userId) {
+    public List<Credential> getCredentials(Long userId) {
 
-        List<Credential> credentialList = credentialMapper.getCredential(userId);
-        credentialList.stream().forEach(cr -> cr.setDecryptedPassword(encryptionService.decryptValue(cr.getPassword(), cr.getKey())));
+        List<Credential> credentialList = credentialRepository.findByUserId(userId);
+        credentialList.forEach(cr -> cr.setDecryptedPassword(encryptionService.decryptValue(cr.getPassword(), cr.getKey())));
         return credentialList;
     }
 }

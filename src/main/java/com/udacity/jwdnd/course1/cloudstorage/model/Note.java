@@ -1,23 +1,34 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class Note {
-    private Integer noteId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long noteId;
     private String noteTitle;
     private String noteDescription;
-    private Integer userId;
+    private Long userId;
 
-    public Note(Integer noteId, String noteTitle, String noteDescription, Integer userId) {
+    public Note(){}
+
+    public Note(Long noteId, String noteTitle, String noteDescription, Long userId) {
         this.noteId = noteId;
         this.noteTitle = noteTitle;
         this.noteDescription = noteDescription;
         this.userId = userId;
     }
 
-    public Integer getNoteId() {
+    public Long getNoteId() {
         return noteId;
     }
 
-    public void setNoteId(Integer noteId) {
+    public void setNoteId(Long noteId) {
         this.noteId = noteId;
     }
 
@@ -37,11 +48,11 @@ public class Note {
         this.noteDescription = noteDescription;
     }
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 }

@@ -1,36 +1,37 @@
 package com.udacity.jwdnd.course1.cloudstorage.service;
 
-import com.udacity.jwdnd.course1.cloudstorage.mapper.FileDataMapper;
+
 import com.udacity.jwdnd.course1.cloudstorage.model.FileData;
+import com.udacity.jwdnd.course1.cloudstorage.repository.FileRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class FileService {
-    private FileDataMapper fileDataMapper;
 
-    public FileService(FileDataMapper fileDataMapper) {
-        this.fileDataMapper = fileDataMapper;
+    @Autowired
+    FileRepository fileRepository;
+
+    public boolean isFileNameAvailable(Long userId, String fileName){
+        return fileRepository.findByUserIdAndFileName(userId, fileName) == null;
     }
 
-    public boolean isFileNameAvailable(Integer userId, String fileName){
-        return fileDataMapper.isAvailable(userId, fileName) == null;
+    public FileData addFile(FileData fileData) {
+        return fileRepository.save(fileData);
     }
 
-    public int addFile(FileData fileData) {
-        return fileDataMapper.insertFile(fileData);
+    public FileData viewFile(Long userId, Long fileId){
+        return fileRepository.findByUserIdAndFileId(userId, fileId);
     }
 
-    public FileData viewFile(Integer userId, Integer fileId){
-        return fileDataMapper.viewFile(userId, fileId);
+    public void deleteFile(Long fileId){
+        fileRepository.deleteById(fileId);
     }
 
-    public int deleteFile(Integer fileId){
-        return fileDataMapper.deleteFile(fileId);
-    }
-
-    public List<FileData> getFiles(Integer userId) {
-        return fileDataMapper.getFiles(userId);
+    public List<FileData> getFiles(Long userId) {
+        return fileRepository.findByUserId(userId);
     }
 }
