@@ -9,6 +9,7 @@ import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import com.udacity.jwdnd.course1.cloudstorage.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,25 +25,24 @@ import java.io.IOException;
 @RequestMapping("/home")
 public class HomeController {
 
-    private UserService userService;
-    private NoteService noteService;
-    private CredentialService credentialService;
-    private FileService fileService;
+    @Autowired
+    UserService userService;
 
+    @Autowired
+    NoteService noteService;
 
-    public HomeController(UserService userService, NoteService noteService, CredentialService credentialService, FileService fileService) {
-        this.userService = userService;
-        this.noteService = noteService;
-        this.credentialService = credentialService;
-        this.fileService = fileService;
-    }
+    @Autowired
+    CredentialService credentialService;
+
+    @Autowired
+    FileService fileService;
 
     @GetMapping
     public String getHomePage(Authentication auth, NoteForm noteForm, CredentialForm credentialForm, Model model) {
         User user = userService.getUser(auth.getName());
-        model.addAttribute("files", this.fileService.getFiles(user.getUserId()));
-        model.addAttribute("notes", this.noteService.getNotes(user.getUserId()));
-        model.addAttribute("credentials", this.credentialService.getCredentials(user.getUserId()));
+        model.addAttribute("files", fileService.getFiles(user.getUserId()));
+        model.addAttribute("notes", noteService.getNotes(user.getUserId()));
+        model.addAttribute("credentials", credentialService.getCredentials(user.getUserId()));
         return "home";
     }
 
@@ -51,7 +51,7 @@ public class HomeController {
     public String addOrUpdateNote(NoteForm noteForm, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         if(noteForm.getNoteId() == null) {
-            if(this.noteService.addNote(user, noteForm) == 1) {
+            if(this.noteService.addNote(user, noteForm) != null) {
                 model.addAttribute("success",true);
                 model.addAttribute("successMessage","Note saved!");
 
@@ -61,7 +61,7 @@ public class HomeController {
             }
         }
         else {
-            if(this.noteService.updateNote(noteForm) == 1) {
+            if(this.noteService.updateNote(user, noteForm) != null) {
                 model.addAttribute("success",true);
                 model.addAttribute("successMessage","Your changes were successfully saved!");
 
@@ -69,22 +69,17 @@ public class HomeController {
                 model.addAttribute("success",false);
                 model.addAttribute("errorMessage","Changes were not saved!");
             }
-
         }
         return "result";
     }
 
     //Mapping for deleting a Note
     @PostMapping("/note/delete/{noteId}")
-    public String deleteNote(@PathVariable Integer noteId, Model model){
-        if(this.noteService.deleteNote(noteId) == 1) {
+    public String deleteNote(@PathVariable Long noteId, Model model){
+        this.noteService.deleteNote(noteId);
                 model.addAttribute("success",true);
                 model.addAttribute("successMessage","Note deleted!");
 
-            }else{
-                model.addAttribute("success",false);
-                model.addAttribute("errorMessage","Note was not deleted!");
-            }
         return "result";
     }
 
@@ -93,7 +88,7 @@ public class HomeController {
     public String addOrUpdateCredential(CredentialForm credentialForm, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         if(credentialForm.getCredentialId() == null) {
-            if(this.credentialService.addCredential(user, credentialForm) == 1) {
+            if(credentialService.addCredential(user, credentialForm) != null) {
                 model.addAttribute("success",true);
                 model.addAttribute("successMessage","Credential saved!");
 
@@ -104,7 +99,7 @@ public class HomeController {
             }
         }
         else {
-            if(this.credentialService.updateCredential(credentialForm) == 1) {
+            if(this.credentialService.updateCredential(user, credentialForm) != null) {
                 model.addAttribute("success",true);
                 model.addAttribute("successMessage","Your changes were successfully saved!");
             }else {
@@ -117,15 +112,11 @@ public class HomeController {
 
     //Mapping for deleting a credential
     @PostMapping("/credential/delete/{credentialId}")
-    public String deleteCredential(@PathVariable Integer credentialId, Model model){
-        if(this.credentialService.deleteCredential(credentialId) == 1) {
-            model.addAttribute("success",true);
-            model.addAttribute("successMessage","Credential deleted!");
+    public String deleteCredential(@PathVariable Long credentialId, Model model){
+        credentialService.deleteCredential(credentialId);
+        model.addAttribute("success",true);
+        model.addAttribute("successMessage","Credential deleted!");
 
-        }else{
-            model.addAttribute("success",false);
-            model.addAttribute("errorMessage","Credential was not deleted!");
-        }
         return "result";
     }
 
@@ -146,7 +137,13 @@ public class HomeController {
 
         }
 
-        if(fileService.addFile(new FileData(null,fileUpload.getOriginalFilename(),fileUpload.getContentType(),Long.toString(fileUpload.getSize()),user.getUserId(),fileUpload.getBytes())) == 1) {
+        if(fileService.addFile(
+                new FileData(null,
+                        fileUpload.getOriginalFilename(),
+                        fileUpload.getContentType(),
+                        Long.toString(fileUpload.getSize()),
+                        user.getUserId(),
+                        fileUpload.getBytes())) == null) {
             model.addAttribute("success",true);
             model.addAttribute("successMessage","File saved!");
 
@@ -162,7 +159,7 @@ public class HomeController {
 
     //Mapping for downloading a file
     @GetMapping("/file/view/{fileId}")
-    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable Integer fileId, Authentication auth, Model model) {
+    public ResponseEntity<ByteArrayResource> viewFile(@PathVariable Long fileId, Authentication auth, Model model) {
         User user = userService.getUser(auth.getName());
         FileData file = fileService.viewFile(user.getUserId(), fileId);
         return ResponseEntity.ok()
@@ -173,17 +170,10 @@ public class HomeController {
 
     //Mapping for deleting a file
     @PostMapping("/file/delete/{fileId}")
-    public String deleteFile(@PathVariable Integer fileId, Model model) {
-        if(this.fileService.deleteFile(fileId) == 1) {
+    public String deleteFile(@PathVariable Long fileId, Model model) {
+        //if(this.fileService.deleteFile(fileId)) {
             model.addAttribute("success",true);
             model.addAttribute("successMessage","File successfully deleted!");
-
-        }else {
-            model.addAttribute("success",false);
-            model.addAttribute("successMessage","File not deleted!");
-        }
-
-
         return "result";
     }
 
